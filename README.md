@@ -1,2 +1,2 @@
-# P2T
-Pyramid Pooling Transformer for Scene Understanding
+# Pyramid Pooling Transformer for Scene Understanding
+Code will be released soon...
