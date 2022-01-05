@@ -2,7 +2,7 @@
 
 Requirements:
 
-* torch 1.6.0
+* torch 1.6+
 * torchvision 0.7.0
 * `timm==0.3.2`
 * Validated on torch 1.6.0, torchvision 0.7.0
