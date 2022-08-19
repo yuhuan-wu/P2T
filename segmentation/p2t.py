@@ -3,17 +3,25 @@ from pickle import TRUE
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.jit as jit
 from functools import partial
 
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
 
+from mmseg.models.builder import BACKBONES
+from mmcv.runner import load_checkpoint
+from mmseg.utils import get_root_logger
+
+
 import numpy as np
+from time import time
 
 __all__ = [
     'p2t_tiny', 'p2t_small', 'p2t_base', 'p2t_large'
 ]
+
 
 
 class IRB(nn.Module):
@@ -112,7 +120,7 @@ class Block(nn.Module):
         return x
 
 class PatchEmbed(nn.Module):
-    """ (Overlapped) Image to Patch Embedding
+    """ Image to Patch Embedding
     """
 
     def __init__(self, img_size=224, patch_size=16, kernel_size=3, in_chans=3, embed_dim=768, overlap=True):
@@ -146,9 +154,9 @@ class PatchEmbed(nn.Module):
 class PyramidPoolingTransformer(nn.Module):
     def __init__(self, img_size=224, patch_size=4, in_chans=3, num_classes=1000, embed_dims=[64, 128, 320, 512],
                  num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True, qk_scale=None, drop_rate=0.,
-                 attn_drop_rate=0., drop_path_rate=0.1, norm_layer=partial(nn.LayerNorm, eps=1e-6),
-                 depths=[2, 2, 9, 3]): #
+                 attn_drop_rate=0., drop_path_rate=0.1, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2, 2, 9, 3], **kwargs): #
         super().__init__()
+        print("loading p2t")
         self.num_classes = num_classes
         self.depths = depths
 
@@ -206,13 +214,18 @@ class PyramidPoolingTransformer(nn.Module):
             drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[cur + i], norm_layer=norm_layer, pool_ratios=pool_ratios[3])
             for i in range(depths[3])])
         
-        # classification head
+        # classification head, usually not used in dense prediction tasks
         self.head = nn.Linear(embed_dims[3], num_classes) if num_classes > 0 else nn.Identity()
         self.gap = nn.AdaptiveAvgPool1d(1)
 
         self.apply(self._init_weights)
 
-        #print(self)
+
+    def init_weights(self, pretrained=None):
+        if isinstance(pretrained, str):
+            logger = get_root_logger()
+            load_checkpoint(self, pretrained, map_location='cpu', strict=False, logger=logger)
+ 
 
     def reset_drop_path(self, drop_path_rate):
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(self.depths))]
@@ -231,7 +244,6 @@ class PyramidPoolingTransformer(nn.Module):
         cur += self.depths[2]
         for i in range(self.depths[3]):
             self.block4[i].drop_path.drop_prob = dpr[cur + i]
-        
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -256,38 +268,6 @@ class PyramidPoolingTransformer(nn.Module):
         self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
     
     def forward_features(self, x):
-        B = x.shape[0]
-
-        # stage 1
-        x, (H, W) = self.patch_embed1(x)
-        
-        for idx, blk in enumerate(self.block1):
-            x = blk(x, H, W, self.d_convs1)
-        x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2)
-
-        # stage 2
-        x, (H, W) = self.patch_embed2(x)
-
-        for idx, blk in enumerate(self.block2):
-            x = blk(x, H, W, self.d_convs2)
-        x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2)
-
-        # stage 3
-        x, (H, W) = self.patch_embed3(x)
-
-        for idx, blk in enumerate(self.block3):
-            x = blk(x, H, W, self.d_convs3)
-        x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2)
-        
-        # stage 4
-        x, (H, W) = self.patch_embed4(x)
-
-        for idx, blk in enumerate(self.block4):
-            x = blk(x, H, W, self.d_convs4)
-        
-        return x
-    
-    def forward_features_for_fpn(self, x):
         outs = []
 
         B = x.shape[0]
@@ -327,13 +307,8 @@ class PyramidPoolingTransformer(nn.Module):
 
     def forward(self, x):
         x = self.forward_features(x)
-        x = torch.mean(x, dim=1)
-        x = self.head(x)
 
         return x
-    
-    def forward_for_fpn(self, x):
-        return self.forward_features_for_fpn(x)
 
 
 def _conv_filter(state_dict, patch_size=16):
@@ -347,51 +322,46 @@ def _conv_filter(state_dict, patch_size=16):
     return out_dict
 
 
-@register_model
-def p2t_tiny(pretrained=False, **kwargs):
-    model = PyramidPoolingTransformer(
-        patch_size=4, embed_dims=[48, 96, 240, 384], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2, 2, 6, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
+@BACKBONES.register_module()
+class p2t_tiny(PyramidPoolingTransformer):
+    def __init__(self, **kwargs):
+        super().__init__(
+            patch_size=4, embed_dims=[48, 96, 240, 384], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2, 2, 6, 3], 
+            drop_rate=0.0, drop_path_rate=0.1, **kwargs)
 
-    return model
 
-@register_model
-def p2t_small(pretrained=True, **kwargs):
-    model = PyramidPoolingTransformer(
-        patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2, 2, 9, 3], **kwargs)
-    model.default_cfg = _cfg()
+@BACKBONES.register_module()
+class p2t_small(PyramidPoolingTransformer):
+    def __init__(self, **kwargs):
+        super().__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2,2,9,3], mlp_ratios=[8,8,4,4],
+            drop_rate=0.0, drop_path_rate=0.1, **kwargs)
 
-    return model
 
-@register_model
-def p2t_base(pretrained=False, **kwargs):
-    model = PyramidPoolingTransformer(
-        patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 4, 18, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
+@BACKBONES.register_module()
+class p2t_base(PyramidPoolingTransformer):
+    def __init__(self, **kwargs):
+        super().__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3,4,18,3], mlp_ratios=[8,8,4,4],
+            drop_rate=0.0, drop_path_rate=0.3, **kwargs)
 
-    return model
 
-@register_model
-def p2t_medium(pretrained=False, **kwargs):
-    model = PyramidPoolingTransformer(
-        patch_size=4, embed_dims=[64, 128, 384, 512], num_heads=[1, 2, 6, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 4, 15, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
+@BACKBONES.register_module()
+class p2t_large(PyramidPoolingTransformer):
+    def __init__(self, **kwargs):
+        super().__init__(
+            patch_size=4, embed_dims=[64, 128, 320, 640], num_heads=[1, 2, 5, 8],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3,8,27,3], mlp_ratios=[8,8,4,4],
+            drop_rate=0.0, drop_path_rate=0.3, **kwargs)
 
-    return model
 
-@register_model
-def p2t_large(pretrained=False, **kwargs):
-    model = PyramidPoolingTransformer(
-        patch_size=4, embed_dims=[64, 128, 320, 640], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 8, 27, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
-
-    return model
+@BACKBONES.register_module()
+class p2t_huge(PyramidPoolingTransformer):
+    def __init__(self, **kwargs):
+        super().__init__(
+            patch_size=4, embed_dims=[64, 128, 384, 640], num_heads=[1, 2, 6, 8],
+            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3,8,25,3], mlp_ratios=[8,8,4,4],
+            drop_rate=0.0, drop_path_rate=kwargs['drop_path_rate'])
