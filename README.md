@@ -7,7 +7,7 @@ This is the official repository for Pyramid Pooling Transformer (P2T). This repo
 
 ### Requirements:
 
-* torch 1.6+
+* torch 1.7+
 * torchvision 0.7.0
 * timm==0.3.2
 
@@ -51,11 +51,33 @@ The training and validation scripts can refer to the `segmentation` folder.
 
 ### Object Detection
 
-To be updated. 
+Tested on the coco validation set
 
-### Instance Segmentation
 
-To be updated. 
+| Base Model | Variants  |  AP  | AP@0.5 | AP@0.75 | #Params (M) | # GFLOPS |
+| :--------: | :-------: | :--: | :----: | :-----: | :---------: | :------: |
+| RetinaNet  | P2T-Tiny  | 41.3 |  62.0  |  44.1   |    21.1     |   206    |
+| RetinaNet  | P2T-Small | 44.4 |  65.3  |  47.6   |    33.8     |   260    |
+| RetinaNet  | P2T-Base  | 46.1 |  67.5  |  49.6   |    45.8     |   344    |
+| RetinaNet  | P2T-Large | 47.2 |  68.4  |  50.9   |    64.4     |   449    |
+
+Use this address to access all pretrained weights and logs: [[Google Drive]](https://drive.google.com/drive/folders/1fcg7n3Ga8cYoT-3Ar0PeQXjAC3AnQYyY?usp=sharing)
+
+### Instance Segmentation 
+
+Tested on the coco val set
+
+
+| Base Model | Variants  | APb  | APb@0.5 | APm  | APm@0.5 | #Params (M) | # GFLOPS |
+| :--------: | :-------: | :--: | :-----: | :--: | :-----: | :---------: | :------: |
+| Mask R-CNN | P2T-Tiny  | 43.3 |  65.7   | 39.6 |  62.5   |    31.3     |   225    |
+| Mask R-CNN | P2T-Small | 45.5 |  67.7   | 41.4 |  64.6   |    43.7     |   279    |
+| Mask R-CNN | P2T-Base  | 47.2 |  69.3   | 42.7 |  66.1   |    55.7     |   363    |
+| Mask R-CNN | P2T-Large | 48.3 |  70.2   | 43.5 |  67.3   |    74.0     |   467    |
+
+`APb` denotes AP box metric, and `APm` is the AP mask metric.
+
+Use this address to access all pretrained weights and logs: [[Google Drive]](https://drive.google.com/drive/folders/1fcg7n3Ga8cYoT-3Ar0PeQXjAC3AnQYyY?usp=sharing)
 
 ### Train
 
@@ -66,6 +88,7 @@ python -m torch.distributed.launch --nproc_per_node=8 \
     --master_port=$((RANDOM+10000)) --use_env main.py --data-path ${YOUR_DATA_PATH} --batch-size 128 --model p2t_small --drop-path 0.1
 # model names: --model p2t_tiny/p2t_small/p2t_base/p2t_large
 # with --drop-path 0.1/0.1/0.3/0.3
+# replace ${YOUR_DATA_PATH} with your data path that contains train/ val/ directory
 ````
 
 ### Validate the performance
@@ -86,6 +109,7 @@ If you are using the code/model/data provided here in a publication, please cons
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
   title={{P2T}: Pyramid Pooling Transformer for Scene Understanding}, 
   year={2022},
+  doi = {10.1109/tpami.2022.3202765},
 }
 ````
 
@@ -98,5 +122,5 @@ You can also contact us via sending messages to this email: wuyuhuan@mail.nankai
 
 ### License
 
-This code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public Lincense for Non-Commercial use only. Any commercial use should get formal permission first.
+This code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License for Non-Commercial use only. Any commercial use should get formal permission first.
 
