@@ -7,8 +7,8 @@ This is the official repository for Pyramid Pooling Transformer (P2T). This repo
 
 ### Requirements:
 
-* torch 1.7
-* torchvision 0.7.0
+* torch 1.7+
+* torchvision 0.7.0+
 * timm==0.3.2
 
 ### Introduction
