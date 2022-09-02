@@ -79,7 +79,7 @@ class PoolingAttention(nn.Module):
         x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
         for (pool_ratio, l) in zip(self.pool_ratios, d_convs):
             pool = F.adaptive_avg_pool2d(x_, (round(H/pool_ratio), round(W/pool_ratio)))
-            pool += l(pool)
+            pool = pool + l(pool)
             pools.append(pool.view(B, C, -1))
         
         pools = torch.cat(pools, dim=2)
@@ -358,10 +358,3 @@ class p2t_large(PyramidPoolingTransformer):
             drop_rate=0.0, drop_path_rate=0.3, **kwargs)
 
 
-@BACKBONES.register_module()
-class p2t_huge(PyramidPoolingTransformer):
-    def __init__(self, **kwargs):
-        super().__init__(
-            patch_size=4, embed_dims=[64, 128, 384, 640], num_heads=[1, 2, 6, 8],
-            qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3,8,25,3], mlp_ratios=[8,8,4,4],
-            drop_rate=0.0, drop_path_rate=kwargs['drop_path_rate'])

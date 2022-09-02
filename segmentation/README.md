@@ -54,10 +54,11 @@ If you are using the code/model/data provided here in a publication, please cons
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
   title={{P2T}: Pyramid Pooling Transformer for Scene Understanding}, 
   year={2022},
+  doi = {10.1109/tpami.2022.3202765},
 }
 ````
 
 ### License
 
-This code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public Lincense for Non-Commercial use only. Any commercial use should get formal permission first.
+This code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License for Non-Commercial use only. Any commercial use should get formal permission first.
 
