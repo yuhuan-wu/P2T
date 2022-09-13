@@ -71,7 +71,7 @@ class PoolingAttention(nn.Module):
         x_ = x.permute(0, 2, 1).reshape(B, C, H, W)
         for (pool_ratio, l) in zip(self.pool_ratios, d_convs):
             pool = F.adaptive_avg_pool2d(x_, (round(H/pool_ratio), round(W/pool_ratio)))
-            pool += l(pool) # fix backward bug in higher torch versions when training
+            pool = pool + l(pool) # fix backward bug in higher torch versions when training
             pools.append(pool.view(B, C, -1))
         
         pools = torch.cat(pools, dim=2)
