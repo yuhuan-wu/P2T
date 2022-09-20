@@ -5,6 +5,11 @@ This is the official repository for Pyramid Pooling Transformer (P2T). This repo
 * [x] Full code for training/test 
 * [x] Pretrained models in image classification, object detection, and semantic segmentation.
 
+Related links:
+[[Official PDF Download]](https://mmcheng.net/wp-content/uploads/2022/09/22TPAMI-P2T.pdf)
+[[中译版全文]](https://mmcheng.net/wp-content/uploads/2022/08/22PAMI_P2T_CN.pdf)
+[[5分钟中文解读]](https://mp.weixin.qq.com/s/7qXtyFaIiYny0eUqBbPraQ)
+
 ### Requirements:
 
 * torch>=1.7+
