@@ -11,11 +11,10 @@ This folder contains full training and test code for semantic segmentation.
 
 |  Base Model    | Variants  | mIoU | aAcc | mAcc | #Params (M) | # GFLOPS |                         Google Drive                         |
 | :--: | :-------: | :--: | :--: | :---------: | :------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| Semantic FPN    | P2T-Tiny  | 43.4 | 80.8 |    54.5    |    15.4    |   31.6   | [[weights]](https://drive.google.com/file/d/1x9EweWx77pXrHOCc7RJF3sYK2rht0_4m/view?usp=sharing)\|[[log]](https://drive.google.com/file/d/1CDofCg9pi0Cyiha_dIimggF228M5mOeH/view?usp=sharing) |
-| Semantic FPN    | P2T-Small | 46.7 | 82.0 |    58.4    |    27.8    |   42.7   | [[weights]](https://drive.google.com/file/d/1FlwhyVKw0zqj2mux248gIQFQ8DGPi8rS/view?usp=sharing)\|[[log]](https://drive.google.com/file/d/1bCZz7y0I0EEw74KaVg5iAr3hBYtSIEii/view?usp=sharing) |
-| Semantic FPN    | P2T-Base  | 48.7 | 82.9 |    60.7    |    39.8    |   58.5   | [[weights]](https://drive.google.com/file/d/1iZoWexUTPUDSIZiJHNRt2zZl2kFj68F4/view?usp=sharing)\|[[log]](https://drive.google.com/file/d/13_XaX0XtYSzPatVl54ihFbEwflHLVvsl/view?usp=sharing) |
-| Semantic FPN      | P2T-Large | 49.4 | 83.3 |    61.9    |    58.1    |   77.7   | [[weights]](https://drive.google.com/file/d/13jBJ7ShDJd1juViC-zPtfLXYPRwkNfya/view?usp=sharing)\|[[log]](https://drive.google.com/file/d/1-RLjGzez-_O2_8obbXvUYGhWacPnqK1U/view?usp=sharing) |
-
+| Semantic FPN    | P2T-Tiny  | 43.4 | 80.8 |    54.5    |    15.4    |   31.6   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
+| Semantic FPN    | P2T-Small | 46.7 | 82.0 |    58.4    |    27.8    |   42.7   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
+| Semantic FPN    | P2T-Base  | 48.7 | 82.9 |    60.7    |    39.8    |   58.5   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
+| Semantic FPN      | P2T-Large | 49.4 | 83.3 |    61.9    |    58.1    |   77.7   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
 
 
 ### Train
