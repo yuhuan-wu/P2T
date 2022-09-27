@@ -16,6 +16,9 @@ This folder contains full training and test code for semantic segmentation.
 | Semantic FPN    | P2T-Base  | 48.7 | 82.9 |    60.7    |    39.8    |   58.5   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
 | Semantic FPN      | P2T-Large | 49.4 | 83.3 |    61.9    |    58.1    |   77.7   | [[weights & logs]](https://drive.google.com/drive/folders/1SH9zmdGKvnpFBVU3dXS6-TZT04CZgkX9?usp=sharing) |
 
+### Data Preparation
+
+Put data folder of ADE20K dataset to `data/ade/ADEChallengeData2016`.
 
 ### Train
 
