@@ -42,6 +42,9 @@ In the experiments, P2T beats all the CNN/Transformer competitors such as ResNet
 | P2T-Large | 224 x 224 | 83.9 | 96.7 | 54.5 | 9.8 | [[weights]](https://drive.google.com/file/d/13jBJ7ShDJd1juViC-zPtfLXYPRwkNfya/view?usp=sharing)\|[[log]](https://drive.google.com/file/d/1-RLjGzez-_O2_8obbXvUYGhWacPnqK1U/view?usp=sharing) |
 
 All models are trained on ImageNet1K dataset. You can see all weights/logs at this url: [[Google Drive]](https://drive.google.com/drive/folders/1Osweqc1OphwtWONXIgD20q9_I2arT9yz?usp=sharing)
+[BaiduPan, 提取码yhwu](https://pan.baidu.com/s/1JkE62CS9EoSTLW1M1Ajmxw?pwd=yhwu)
+
+
 
 ### Semantic Segmentation
 
@@ -56,6 +59,8 @@ All models are trained on ImageNet1K dataset. You can see all weights/logs at th
 
 The training and validation scripts can refer to the `segmentation` folder.
 
+BaiduPan download link: [BaiduPan, 提取码yhwu](https://pan.baidu.com/s/1JkE62CS9EoSTLW1M1Ajmxw?pwd=yhwu)
+
 ### Object Detection
 
 Tested on the coco validation set
@@ -69,6 +74,9 @@ Tested on the coco validation set
 | RetinaNet  | P2T-Large | 47.2 |  68.4  |  50.9   |    64.4     |   449    |
 
 Use this address to access all pretrained weights and logs: [[Google Drive]](https://drive.google.com/drive/folders/1fcg7n3Ga8cYoT-3Ar0PeQXjAC3AnQYyY?usp=sharing)
+
+BaiduPan download link: [BaiduPan, 提取码yhwu](https://pan.baidu.com/s/1JkE62CS9EoSTLW1M1Ajmxw?pwd=yhwu)
+
 
 ### Instance Segmentation 
 
