@@ -4,12 +4,16 @@ This folder contains full training and test code for semantic segmentation.
 
 ### Requirements
 
-* mmdetection >= 2.14
+* mmdetection == 2.14
 
 We train each model based on `mmdetection==2.8.0`.
 Since new GPU cards (RTX 3000 series) should compile mmcv from source to support this early version,
 we reorganize the config and support newer mmdetection version. 
 Therefore, you can simply reproduce the result on newer GPUs.
+
+### Data Preparation
+
+Put MS COCO dataset files to `data/coco/`.
 
 ### Object Detection
 
@@ -44,6 +48,10 @@ Use this address to access all pretrained weights and logs: [[Google Drive]](htt
 
 ### Train
 
+Before training, please make sure you have `mmdetection==2.14` and downloaded the ImageNet-pretrained P2T weights from [[Google Drive]](https://drive.google.com/drive/folders/1Osweqc1OphwtWONXIgD20q9_I2arT9yz?usp=sharing) or
+[[BaiduPan, 提取码yhwu]](https://pan.baidu.com/s/1JkE62CS9EoSTLW1M1Ajmxw?pwd=yhwu). 
+Put them to `pretrained/` folder.
+
 Use the following commands to train `Mask R-CNN` with `P2T-Tiny` backbone for distributed learning with 8 GPUs:
 
 ````
@@ -54,7 +62,7 @@ Other configs are on the `configs` directory.
 
 ### Validate
 
-Please download the pretrained model from the above table. Put them to `pretrained` folder.
+Please download the pretrained model from [[Google Drive]](https://drive.google.com/drive/folders/1fcg7n3Ga8cYoT-3Ar0PeQXjAC3AnQYyY?usp=sharing) or [[BaiduPan, 提取码yhwu]](https://pan.baidu.com/s/1JkE62CS9EoSTLW1M1Ajmxw?pwd=yhwu). Put them to `pretrained` folder.
 Then, use the following commands to validate `Semantic FPN` with `P2T-Small` backbone in a single GPU:
 
 ````
