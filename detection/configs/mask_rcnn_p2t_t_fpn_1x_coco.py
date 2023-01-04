@@ -10,7 +10,7 @@ model = dict(
         style='pytorch',
         init_cfg=dict(
             type='Pretrained',
-            checkpoint='open-mmlab://detectron2/resnet101_caffe'),
+            checkpoint='pretrained/p2t_tiny.pth'),
     ),
     neck=dict(
         type='FPN',

@@ -10,7 +10,7 @@ model = dict(
         style='pytorch',
         init_cfg=dict(
             type='Pretrained',
-            checkpoint='data/pretrained/p2t/p2t_small.pth'),
+            checkpoint='pretrained/p2t_small.pth'),
     ),
     neck=dict(
         type='FPN',
