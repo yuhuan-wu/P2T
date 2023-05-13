@@ -147,7 +147,7 @@ class PyramidPoolingTransformer(nn.Module):
     def __init__(self, img_size=224, patch_size=4, in_chans=3, num_classes=1000, embed_dims=[64, 128, 320, 512],
                  num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True, qk_scale=None, drop_rate=0.,
                  attn_drop_rate=0., drop_path_rate=0.1, norm_layer=partial(nn.LayerNorm, eps=1e-6),
-                 depths=[2, 2, 9, 3]): #
+                 depths=[2, 2, 9, 3], **kwargs): #
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
