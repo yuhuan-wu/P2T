@@ -1,4 +1,4 @@
-## [TPAMI22] Pyramid Pooling Transformer for Scene Understanding
+## [TPAMI23] Pyramid Pooling Transformer for Scene Understanding
 
 This is the official repository for Pyramid Pooling Transformer (P2T). This repository contains:
 
