@@ -124,11 +124,14 @@ python main.py --eval --resume pretrained/p2t_small.pth --model p2t_small
 If you are using the code/model/data provided here in a publication, please consider citing our works:
 
 ````
-@ARTICLE{wu2022p2t,
+@ARTICLE{wu2023p2t,
   author={Wu, Yu-Huan and Liu, Yun and Zhan, Xin and Cheng, Ming-Ming},
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
   title={{P2T}: Pyramid Pooling Transformer for Scene Understanding}, 
-  year={2022},
+  year={2023},
+  volume={45},
+  number={11},
+  pages={12760--12771},
   doi = {10.1109/tpami.2022.3202765},
 }
 
